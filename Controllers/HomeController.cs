@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using TP_Individual_prog.Models;
+using LaboratorioKits.Models; 
 
 namespace TP_Individual_prog.Controllers;
 
@@ -13,12 +14,8 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-   public IActionResult Index()
-{
-    HttpContext.Session.SetString("Prueba", "La sesión funciona");
-    return View();
-}
 
+    
 public IActionResult Privacy()
 {
     ViewBag.Prueba = HttpContext.Session.GetString("Prueba");
@@ -30,4 +27,7 @@ public IActionResult Privacy()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+
+        
 }
