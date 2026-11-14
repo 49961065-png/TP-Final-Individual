@@ -1,0 +1,39 @@
+@{
+    ViewData["Title"] = "Registro";
+}
+
+<h1>Crear cuenta</h1>
+
+@if (ViewBag.Error != null)
+{
+    <p class="text-danger">@ViewBag.Error</p>
+}
+
+@if (ViewBag.Exito != null)
+{
+    <p class="text-success">@ViewBag.Exito</p>
+}
+
+<form action='@Url.Action("Registro", "Cuenta")' method="POST" id="formRegistro">
+    <div class="mb-3">
+        <label for="Nombre">Nombre</label>
+        <input type="text" name="Nombre" id="Nombre" class="form-control" maxlength="50" value="@ViewBag.Nombre">
+    </div>
+    <div class="mb-3">
+        <label for="Apellido">Apellido</label>
+        <input type="text" name="Apellido" id="Apellido" class="form-control" maxlength="50" value="@ViewBag.Apellido">
+    </div>
+    <div class="mb-3">
+        <label for="NombreUsuario">Nombre de usuario</label>
+        <input type="text" name="NombreUsuario" id="NombreUsuario" class="form-control" maxlength="50" value="@ViewBag.NombreUsuario">
+    </div>
+    <div class="mb-3">
+        <label for="Contrasena">Contraseña</label>
+        <input type="password" name="Contrasena" id="Contrasena" class="form-control" maxlength="50">
+    </div>
+    <div class="mb-3">
+        <label for="repetirContrasena">Repetir contraseña</label>
+        <input type="password" name="repetirContrasena" id="repetirContrasena" class="form-control" maxlength="50">
+    </div>
+    <input type="submit" value="Crear cuenta" class="btn btn-primary">
+</form>

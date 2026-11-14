@@ -1,4 +1,4 @@
-namespace LaboratorioKits.Models;
+namespace TP_Individual_prog.Models;
 
 public class Usuario
 {
