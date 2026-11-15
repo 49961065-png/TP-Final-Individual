@@ -10,6 +10,34 @@ public class CuentaController : Controller
         return View();
     }
 
+    public IActionResult Login()
+{
+    return View();
+}
+
+[HttpPost]
+public IActionResult Login(string nombreUsuario, string contrasena)
+{
+    Usuario? usuario = BD.ObtenerUsuarioPorNombre(nombreUsuario);
+
+    if (usuario == null || usuario.Contrasena != contrasena)
+    {
+        ViewBag.Error = "Usuario o contraseña incorrectos.";
+        ViewBag.NombreUsuario = nombreUsuario;
+        return View();
+    }
+
+    HttpContext.Session.SetString("IdUsuario", usuario.Id.ToString());
+    HttpContext.Session.SetString("Nombre", usuario.Nombre);
+    return RedirectToAction("Index", "Home");
+}
+
+public IActionResult Logout()
+{
+    HttpContext.Session.Clear();
+    return RedirectToAction("Login");
+}
+
     [HttpPost]
     public IActionResult Registro(Usuario usuario, string repetirContrasena)
     {

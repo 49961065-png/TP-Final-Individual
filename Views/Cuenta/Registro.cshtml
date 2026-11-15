@@ -14,7 +14,9 @@
     <p class="text-success">@ViewBag.Exito</p>
 }
 
-<form action='@Url.Action("Registro", "Cuenta")' method="POST" id="formRegistro">
+<p id="mensajeError" class="text-danger"></p>
+
+<form action='@Url.Action("Registro", "Cuenta")' method="POST" id="formRegistro" onsubmit="return validarRegistro()">
     <div class="mb-3">
         <label for="Nombre">Nombre</label>
         <input type="text" name="Nombre" id="Nombre" class="form-control" maxlength="50" value="@ViewBag.Nombre">
@@ -36,4 +38,6 @@
         <input type="password" name="repetirContrasena" id="repetirContrasena" class="form-control" maxlength="50">
     </div>
     <input type="submit" value="Crear cuenta" class="btn btn-primary">
+    
+    <p>¿Ya tenés cuenta? <a href='@Url.Action("Login", "Cuenta")'>Iniciar sesión</a></p>
 </form>
