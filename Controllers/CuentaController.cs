@@ -29,7 +29,7 @@ public IActionResult Login(string nombreUsuario, string contrasena)
 
     HttpContext.Session.SetString("IdUsuario", usuario.Id.ToString());
     HttpContext.Session.SetString("Nombre", usuario.Nombre);
-    return RedirectToAction("Index", "Home");
+   return RedirectToAction("Index", "Kits");
 }
 
 public IActionResult Logout()

@@ -1,0 +1,21 @@
+@using TP_Individual_prog.Models
+@{
+    ViewData["Title"] = "Catálogo";
+    List<Kit> kits = ViewBag.Kits;
+}
+
+<h1>Catálogo de kits</h1>
+
+<div class="catalogo" id="catalogo">
+    @foreach (Kit kit in kits)
+    {
+        <article class="tarjeta">
+            <img src="~/img/@kit.Imagen" alt="@kit.Nombre">
+            <div class="tarjeta-info">
+                <h2>@kit.Nombre</h2>
+                <p class="categoria">@kit.NombreCategoria</p>
+                <a href='@Url.Action("Detalle", "Kits", new { id = kit.Id })' class="btn btn-primary">Ver detalle</a>
+            </div>
+        </article>
+    }
+</div>

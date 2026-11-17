@@ -2,7 +2,6 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using TP_Individual_prog.Models;
 
-
 namespace TP_Individual_prog.Controllers;
 
 public class HomeController : Controller
@@ -16,6 +15,10 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetString("IdUsuario") != null)
+        {
+            return RedirectToAction("Index", "Kits");
+        }
         return View();
     }
 
