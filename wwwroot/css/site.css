@@ -73,3 +73,32 @@ body {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
+
+
+
+/* ===== Encabezado ===== */
+.encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    background-color: #1f3a5f;
+}
+
+header.encabezado a,
+header.encabezado span {
+    color: white;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+header.encabezado .logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+header.encabezado a:hover {
+    text-decoration: underline;
+}

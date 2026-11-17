@@ -5,7 +5,7 @@ namespace TP_Individual_prog.Controllers;
 
 public class KitsController : Controller
 {
-   public IActionResult Index()
+    public IActionResult Index()
     {
         if (HttpContext.Session.GetString("IdUsuario") == null)
         {
@@ -16,6 +16,25 @@ public class KitsController : Controller
         ViewBag.Kits = ArmarPagina(todos, 0);
         ViewBag.HayMas = todos.Count > 8;
         return View();
+    }
+
+    public IActionResult VerMas(int desde)
+    {
+        if (HttpContext.Session.GetString("IdUsuario") == null)
+        {
+            return Json(new { kits = new List<Kit>(), hayMas = false });
+        }
+
+        if (desde < 0)
+        {
+            desde = 0;
+        }
+
+        List<Kit> todos = BD.ObtenerKits();
+        List<Kit> pagina = ArmarPagina(todos, desde);
+        bool hayMas = desde + 8 < todos.Count;
+
+        return Json(new { kits = pagina, hayMas = hayMas });
     }
 
     private List<Kit> ArmarPagina(List<Kit> todos, int desde)
