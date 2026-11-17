@@ -37,6 +37,49 @@ public class KitsController : Controller
         return Json(new { kits = pagina, hayMas = hayMas });
     }
 
+    public IActionResult DetalleKit(int id)
+    {
+        if (HttpContext.Session.GetString("IdUsuario") == null)
+        {
+            return RedirectToAction("Login", "Cuenta");
+        }
+
+        Kit? kit = BD.ObtenerKitPorId(id);
+
+        if (kit == null)
+        {
+            return RedirectToAction("Index");
+        }
+
+        ViewBag.Kit = kit;
+        return View();
+    }
+
+    public IActionResult BloquesLibres(int idKit, DateTime fecha)
+    {
+        List<object> resultado = new List<object>();
+
+        if (HttpContext.Session.GetString("IdUsuario") == null || fecha.Date < DateTime.Today)
+        {
+            return Json(resultado);
+        }
+
+        List<Bloque> libres = BD.ObtenerBloquesLibres(idKit, fecha);
+
+        foreach (Bloque bloque in libres)
+        {
+            bool yaPaso = fecha.Date == DateTime.Today && bloque.HoraInicio <= DateTime.Now.TimeOfDay;
+
+            if (!yaPaso)
+            {
+                string horario = bloque.HoraInicio.ToString().Substring(0, 5) + " a " + bloque.HoraFin.ToString().Substring(0, 5);
+                resultado.Add(new { id = bloque.Id, numero = bloque.Numero, horario = horario });
+            }
+        }
+
+        return Json(resultado);
+    }
+
     private List<Kit> ArmarPagina(List<Kit> todos, int desde)
     {
         List<Kit> pagina = new List<Kit>();

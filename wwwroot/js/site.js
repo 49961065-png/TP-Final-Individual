@@ -45,7 +45,7 @@ async function verMas() {
             '<div class="tarjeta-info">' +
             '<h2>' + kit.nombre + '</h2>' +
             '<p class="categoria">' + kit.nombreCategoria + '</p>' +
-            '<a href="/Kits/Detalle/' + kit.id + '" class="btn btn-primary">Ver detalle</a>' +
+            '<a href="/Kits/DetalleKit/' + kit.id + '" class="btn btn-primary">Ver detalle</a>' +
             '</div>';
 
         contenedor.appendChild(tarjeta);

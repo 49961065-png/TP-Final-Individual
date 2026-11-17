@@ -1,0 +1,38 @@
+@using TP_Individual_prog.Models
+@{
+    ViewData["Title"] = "Detalle del kit";
+    Kit kit = ViewBag.Kit;
+    string hoy = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<a href='@Url.Action("Index", "Kits")'>← Volver al catálogo</a>
+
+<section class="detalle">
+    <img src="~/img/@kit.Imagen" alt="@kit.Nombre">
+
+    <div class="detalle-info">
+        <h1>@kit.Nombre</h1>
+        <p class="categoria">@kit.NombreCategoria</p>
+        <p>@kit.Descripcion</p>
+
+        <h2>Pedir este kit</h2>
+        <form action='@Url.Action("Pedir", "Kits")' method="POST">
+            <input type="hidden" name="IdKit" id="IdKit" value="@kit.Id">
+
+            <div class="mb-3">
+                <label for="Fecha">Fecha</label>
+                <input type="date" name="Fecha" id="Fecha" class="form-control" min="@hoy" onchange="cargarBloques()">
+            </div>
+
+            <div class="mb-3">
+                <label for="IdBloque">Bloque</label>
+                <select name="IdBloque" id="IdBloque" class="form-control">
+                    <option value="">Elegí una fecha primero</option>
+                </select>
+                <p id="mensajeBloques" class="text-muted"></p>
+            </div>
+
+            <input type="submit" id="botonPedir" value="Pedir kit" class="btn btn-primary" disabled>
+        </form>
+    </div>
+</section>

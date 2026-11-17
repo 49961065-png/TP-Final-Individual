@@ -5,7 +5,7 @@ namespace TP_Individual_prog.Models;
 
 public class BD
 {
-  private static string _connectionString = @"Server=localhost\SQLEXPRESS;DataBase=LaboratorioKits;Integrated Security=True;TrustServerCertificate=True;";
+private static string _connectionString = @"Server=localhost;DataBase=LaboratorioKits;Integrated Security=True;TrustServerCertificate=True;";
     public static List<Kit> ObtenerKits()
     {
         List<Kit> kits = new List<Kit>();
@@ -49,4 +49,37 @@ public class BD
             connection.Execute(query, new { pNombreUsuario = usuario.NombreUsuario, pContrasena = usuario.Contrasena, pNombre = usuario.Nombre, pApellido = usuario.Apellido });
         }
     }
+
+public static Kit? ObtenerKitPorId(int id)
+{
+    Kit? kit = null;
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT Kits.Id, Kits.Nombre, Kits.Descripcion, Kits.Imagen, Kits.IdCategoria, Kits.Activo, Categorias.Nombre AS NombreCategoria " +
+                       "FROM Kits INNER JOIN Categorias ON Kits.IdCategoria = Categorias.Id " +
+                       "WHERE Kits.Id = @pId AND Kits.Activo = 1";
+        kit = connection.QueryFirstOrDefault<Kit>(query, new { pId = id });
+    }
+    return kit;
+}
+
+
+
+
+
+public static List<Bloque> ObtenerBloquesLibres(int idKit, DateTime fecha)
+{
+    List<Bloque> bloques = new List<Bloque>();
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT Bloques.* FROM Bloques " +
+                       "LEFT JOIN Prestamos ON Prestamos.IdBloque = Bloques.Id " +
+                       "AND Prestamos.IdKit = @pIdKit AND Prestamos.Fecha = @pFecha AND Prestamos.Cancelado = 0 " +
+                       "WHERE Prestamos.Id IS NULL " +
+                       "ORDER BY Bloques.Numero";
+        bloques = connection.Query<Bloque>(query, new { pIdKit = idKit, pFecha = fecha.Date }).ToList();
+    }
+    return bloques;
+}
+
 }
