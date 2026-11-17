@@ -54,4 +54,41 @@ async function verMas() {
     if (datos.hayMas === false) {
         boton.style.display = "none";
     }
+
+
+    // ===== Detalle del kit =====
+
+async function cargarBloques() {
+    let idKit = document.getElementById("IdKit").value;
+    let fecha = document.getElementById("Fecha").value;
+    let select = document.getElementById("IdBloque");
+    let mensaje = document.getElementById("mensajeBloques");
+    let boton = document.getElementById("botonPedir");
+
+    select.innerHTML = "";
+    boton.disabled = true;
+
+    if (fecha === "") {
+        mensaje.innerHTML = "Elegí una fecha.";
+        return;
+    }
+
+    let respuesta = await fetch("/Kits/BloquesLibres?idKit=" + idKit + "&fecha=" + fecha);
+    let bloques = await respuesta.json();
+
+    if (bloques.length === 0) {
+        mensaje.innerHTML = "No hay bloques libres para esa fecha.";
+        return;
+    }
+
+    for (let i = 0; i < bloques.length; i++) {
+        let opcion = document.createElement("option");
+        opcion.value = bloques[i].id;
+        opcion.innerHTML = bloques[i].numero + ".° bloque (" + bloques[i].horario + ")";
+        select.appendChild(opcion);
+    }
+
+    mensaje.innerHTML = "";
+    boton.disabled = false;
+}
 }
