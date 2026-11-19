@@ -82,4 +82,47 @@ public static List<Bloque> ObtenerBloquesLibres(int idKit, DateTime fecha)
     return bloques;
 }
 
+
+
+public static Bloque? ObtenerBloquePorId(int id)
+{
+    Bloque? bloque = null;
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT * FROM Bloques WHERE Id = @pId";
+        bloque = connection.QueryFirstOrDefault<Bloque>(query, new { pId = id });
+    }
+    return bloque;
+}
+
+public static bool ExisteCodigo(string codigo)
+{
+    int cantidad = 0;
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT COUNT(*) FROM Prestamos WHERE Codigo = @pCodigo";
+        cantidad = connection.QueryFirstOrDefault<int>(query, new { pCodigo = codigo });
+    }
+    return cantidad > 0;
+}
+
+public static void AgregarPrestamo(int idKit, int idUsuario, DateTime fecha, int idBloque, string codigo)
+{
+    string query = "INSERT INTO Prestamos (IdKit, IdUsuario, Fecha, IdBloque, Codigo) VALUES (@pIdKit, @pIdUsuario, @pFecha, @pIdBloque, @pCodigo)";
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        connection.Execute(query, new { pIdKit = idKit, pIdUsuario = idUsuario, pFecha = fecha.Date, pIdBloque = idBloque, pCodigo = codigo });
+    }
+}
+public static int ContarPrestamosDelDia(int idUsuario, DateTime fecha)
+{
+    int cantidad = 0;
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT COUNT(*) FROM Prestamos WHERE IdUsuario = @pIdUsuario AND Fecha = @pFecha AND Cancelado = 0";
+        cantidad = connection.QueryFirstOrDefault<int>(query, new { pIdUsuario = idUsuario, pFecha = fecha.Date });
+    }
+    return cantidad;
+}
+
 }

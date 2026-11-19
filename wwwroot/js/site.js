@@ -1,4 +1,6 @@
-﻿function validarRegistro() {
+﻿// ===== Registro =====
+
+function validarRegistro() {
     let nombre = document.getElementById("Nombre").value;
     let apellido = document.getElementById("Apellido").value;
     let usuario = document.getElementById("NombreUsuario").value;
@@ -25,7 +27,7 @@
     return true;
 }
 
-// ===== El catalogp =====
+// ===== Catálogo =====
 
 async function verMas() {
     let contenedor = document.getElementById("catalogo");
@@ -54,9 +56,9 @@ async function verMas() {
     if (datos.hayMas === false) {
         boton.style.display = "none";
     }
+}
 
-
-    // ===== Detalle del kit =====
+// ===== Detalle del kit =====
 
 async function cargarBloques() {
     let idKit = document.getElementById("IdKit").value;
@@ -90,5 +92,4 @@ async function cargarBloques() {
 
     mensaje.innerHTML = "";
     boton.disabled = false;
-}
-}
+}   

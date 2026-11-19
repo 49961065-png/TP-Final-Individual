@@ -16,12 +16,24 @@
         <p>@kit.Descripcion</p>
 
         <h2>Pedir este kit</h2>
+
+        @if (ViewBag.Error != null)
+        {
+            <p class="text-danger">@ViewBag.Error</p>
+        }
+
+        @if (ViewBag.Exito != null)
+        {
+            <p class="text-success">@ViewBag.Exito</p>
+        }
+
         <form action='@Url.Action("Pedir", "Kits")' method="POST">
             <input type="hidden" name="IdKit" id="IdKit" value="@kit.Id">
 
             <div class="mb-3">
                 <label for="Fecha">Fecha</label>
-                <input type="date" name="Fecha" id="Fecha" class="form-control" min="@hoy" onchange="cargarBloques()">
+                <input type="date" name="Fecha" id="Fecha" class="form-control" min="@hoy">
+                <button type="button" class="btn btn-secondary mt-2" onclick="cargarBloques()">Ver bloques libres</button>
             </div>
 
             <div class="mb-3">
