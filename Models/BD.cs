@@ -125,4 +125,15 @@ public static int ContarPrestamosDelDia(int idUsuario, DateTime fecha)
     return cantidad;
 }
 
+public static bool KitOcupado(int idKit, DateTime fecha, int idBloque)
+{
+    int cantidad = 0;
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT COUNT(*) FROM Prestamos WHERE IdKit = @pIdKit AND Fecha = @pFecha AND IdBloque = @pIdBloque AND Cancelado = 0";
+        cantidad = connection.QueryFirstOrDefault<int>(query, new { pIdKit = idKit, pFecha = fecha.Date, pIdBloque = idBloque });
+    }
+    return cantidad > 0;
+}
+
 }

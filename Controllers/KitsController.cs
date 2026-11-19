@@ -113,8 +113,9 @@ public IActionResult Pedir(int idKit, DateTime fecha, int idBloque)
     {
         ViewBag.Error = error;
         return View("DetalleKit");
-    }
 
+    }
+    
     string codigo = GenerarCodigo();
     BD.AgregarPrestamo(idKit, idUsuario, fecha, idBloque, codigo);
 
