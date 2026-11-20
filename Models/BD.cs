@@ -156,7 +156,25 @@ public static List<Prestamo> ObtenerPrestamosDeUsuario(int idUsuario)
 }
 
 
+public static Prestamo? ObtenerPrestamoPorId(int id)
+{
+    Prestamo? prestamo = null;
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT * FROM Prestamos WHERE Id = @pId";
+        prestamo = connection.QueryFirstOrDefault<Prestamo>(query, new { pId = id });
+    }
+    return prestamo;
+}
 
+public static void CancelarPrestamo(int id)
+{
+    string query = "UPDATE Prestamos SET Cancelado = 1, FechaCancelacion = GETDATE() WHERE Id = @pId";
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        connection.Execute(query, new { pId = id });
+    }
+}
 
 
 }

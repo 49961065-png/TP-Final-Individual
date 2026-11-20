@@ -93,3 +93,27 @@ async function cargarBloques() {
     mensaje.innerHTML = "";
     boton.disabled = false;
 }   
+
+// ===== Mis préstamos =====
+
+async function cancelarPrestamo(id) {
+    let mensaje = document.getElementById("mensajeCancelar");
+
+    let respuesta = await fetch("/Prestamos/Cancelar", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "id=" + id
+    });
+    let datos = await respuesta.json();
+
+    mensaje.innerHTML = datos.mensaje;
+
+    if (datos.ok === true) {
+        let tarjeta = document.getElementById("prestamo-" + id);
+        tarjeta.parentNode.removeChild(tarjeta);
+
+        if (document.getElementsByClassName("prestamo-proximo").length === 0) {
+            document.getElementById("sinProximos").innerHTML = "No tenés préstamos próximos.";
+        }
+    }
+}

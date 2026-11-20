@@ -37,4 +37,41 @@ public class PrestamosController : Controller
         ViewBag.Pasados = pasados;
         return View();
     }
+
+[HttpPost]
+public IActionResult Cancelar(int id)
+{
+    string? idTexto = HttpContext.Session.GetString("IdUsuario");
+    if (idTexto == null)
+    {
+        return Json(new { ok = false, mensaje = "Tenés que iniciar sesión." });
+    }
+    int idUsuario = int.Parse(idTexto);
+
+    Prestamo? prestamo = BD.ObtenerPrestamoPorId(id);
+
+    if (prestamo == null || prestamo.IdUsuario != idUsuario)
+    {
+        return Json(new { ok = false, mensaje = "No se encontró ese préstamo." });
+    }
+
+    if (prestamo.Cancelado)
+    {
+        return Json(new { ok = false, mensaje = "Ese préstamo ya estaba cancelado." });
+    }
+
+    Bloque? bloque = BD.ObtenerBloquePorId(prestamo.IdBloque);
+    bool yaPaso = prestamo.Fecha.Date < DateTime.Today ||
+                  (prestamo.Fecha.Date == DateTime.Today && bloque != null && bloque.HoraInicio <= DateTime.Now.TimeOfDay);
+
+    if (yaPaso)
+    {
+        return Json(new { ok = false, mensaje = "Ese préstamo ya pasó, no se puede cancelar." });
+    }
+
+    BD.CancelarPrestamo(id);
+    return Json(new { ok = true, mensaje = "Préstamo cancelado." });
+}
+
+
 }
