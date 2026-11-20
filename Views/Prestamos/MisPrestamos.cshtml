@@ -1,0 +1,41 @@
+@using TP_Individual_prog.Models
+@{
+    ViewData["Title"] = "Mis préstamos";
+    List<Prestamo> proximos = ViewBag.Proximos;
+    List<Prestamo> pasados = ViewBag.Pasados;
+}
+
+<h1>Mis préstamos</h1>
+<p id="mensajeCancelar" class="text-muted"></p>
+
+<h2>Próximos</h2>
+<p id="sinProximos" class="text-muted">@(proximos.Count == 0 ? "No tenés préstamos próximos." : "")</p>
+
+<div id="listaProximos">
+    @foreach (Prestamo p in proximos)
+    {
+        string horario = p.HoraInicio.ToString().Substring(0, 5) + " a " + p.HoraFin.ToString().Substring(0, 5);
+        <article class="prestamo prestamo-proximo" id="prestamo-@p.Id">
+            <h3>@p.NombreKit</h3>
+            <p>@p.Fecha.ToString("dd/MM/yyyy") - @(p.NumeroBloque).° bloque (@horario)</p>
+            <p>Código: <strong>@p.Codigo</strong></p>
+            <button class="btn btn-danger" onclick="cancelarPrestamo(@p.Id)">Cancelar</button>
+        </article>
+    }
+</div>
+
+<h2>Pasados</h2>
+@if (pasados.Count == 0)
+{
+    <p class="text-muted">Todavía no tenés préstamos pasados.</p>
+}
+
+@foreach (Prestamo p in pasados)
+{
+    string horario = p.HoraInicio.ToString().Substring(0, 5) + " a " + p.HoraFin.ToString().Substring(0, 5);
+    <article class="prestamo">
+        <h3>@p.NombreKit</h3>
+        <p>@p.Fecha.ToString("dd/MM/yyyy") - @(p.NumeroBloque).° bloque (@horario)</p>
+        <p>Código: <strong>@p.Codigo</strong> - @(p.Cancelado ? "Cancelado" : "Realizado")</p>
+    </article>
+}

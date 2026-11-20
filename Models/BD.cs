@@ -136,4 +136,27 @@ public static bool KitOcupado(int idKit, DateTime fecha, int idBloque)
     return cantidad > 0;
 }
 
+
+
+public static List<Prestamo> ObtenerPrestamosDeUsuario(int idUsuario)
+{
+    List<Prestamo> prestamos = new List<Prestamo>();
+    using (SqlConnection connection = new SqlConnection(_connectionString))
+    {
+        string query = "SELECT Prestamos.Id, Prestamos.IdKit, Prestamos.IdUsuario, Prestamos.Fecha, Prestamos.IdBloque, Prestamos.Codigo, Prestamos.Cancelado, " +
+                       "Kits.Nombre AS NombreKit, Bloques.Numero AS NumeroBloque, Bloques.HoraInicio, Bloques.HoraFin " +
+                       "FROM Prestamos " +
+                       "INNER JOIN Kits ON Prestamos.IdKit = Kits.Id " +
+                       "INNER JOIN Bloques ON Prestamos.IdBloque = Bloques.Id " +
+                       "WHERE Prestamos.IdUsuario = @pIdUsuario " +
+                       "ORDER BY Prestamos.Fecha, Bloques.Numero";
+        prestamos = connection.Query<Prestamo>(query, new { pIdUsuario = idUsuario }).ToList();
+    }
+    return prestamos;
+}
+
+
+
+
+
 }

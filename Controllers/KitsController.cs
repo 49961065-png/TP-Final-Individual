@@ -80,6 +80,97 @@ public class KitsController : Controller
         return Json(resultado);
     }
 
+    [HttpPost]
+    public IActionResult Pedir(int idKit, DateTime fecha, int idBloque)
+    {
+        string? idTexto = HttpContext.Session.GetString("IdUsuario");
+        if (idTexto == null)
+        {
+            return RedirectToAction("Login", "Cuenta");
+        }
+        int idUsuario = int.Parse(idTexto);
+
+        Kit? kit = BD.ObtenerKitPorId(idKit);
+        if (kit == null)
+        {
+            return RedirectToAction("Index");
+        }
+
+        ViewBag.Kit = kit;
+
+        string error = ValidarPedido(kit, idUsuario, fecha, idBloque);
+        if (error != "")
+        {
+            ViewBag.Error = error;
+            return View("DetalleKit");
+        }
+
+        string codigo = GenerarCodigo();
+        BD.AgregarPrestamo(idKit, idUsuario, fecha, idBloque, codigo);
+
+        return RedirectToAction("MisPrestamos", "Prestamos");
+    }
+
+    private string ValidarPedido(Kit kit, int idUsuario, DateTime fecha, int idBloque)
+    {
+        if (fecha == DateTime.MinValue)
+        {
+            return "Elegí una fecha.";
+        }
+
+        if (fecha.Date < DateTime.Today)
+        {
+            return "No se puede pedir un kit para una fecha que ya pasó.";
+        }
+
+        Bloque? bloque = BD.ObtenerBloquePorId(idBloque);
+        if (bloque == null)
+        {
+            return "Elegí un bloque.";
+        }
+
+        if (fecha.Date == DateTime.Today && bloque.HoraInicio <= DateTime.Now.TimeOfDay)
+        {
+            return "Ese bloque ya empezó. Elegí otro.";
+        }
+
+        if (BD.ContarPrestamosDelDia(idUsuario, fecha) >= 2)
+        {
+            return "Ya pediste 2 kits para el " + NombreDia(fecha) + " " + fecha.ToString("dd/MM") + ". El máximo es 2 por día.";
+        }
+
+        if (BD.KitOcupado(kit.Id, fecha, idBloque))
+        {
+            return "El kit " + kit.Nombre + " ya está prestado el " + NombreDia(fecha) + " en el " + bloque.Numero + ".° bloque.";
+        }
+
+        return "";
+    }
+
+    private string GenerarCodigo()
+    {
+        string caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        Random azar = new Random();
+        string codigo = "";
+
+        do
+        {
+            codigo = "";
+            for (int i = 0; i < 6; i++)
+            {
+                codigo = codigo + caracteres[azar.Next(caracteres.Length)];
+            }
+        } while (BD.ExisteCodigo(codigo));
+
+        return codigo;
+    }
+
+    private string NombreDia(DateTime fecha)
+    {
+        string[] dias = { "domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado" };
+        return dias[(int)fecha.DayOfWeek];
+    }
+
     private List<Kit> ArmarPagina(List<Kit> todos, int desde)
     {
         List<Kit> pagina = new List<Kit>();
@@ -89,92 +180,4 @@ public class KitsController : Controller
         }
         return pagina;
     }
-
-[HttpPost]
-public IActionResult Pedir(int idKit, DateTime fecha, int idBloque)
-{
-    string? idTexto = HttpContext.Session.GetString("IdUsuario");
-    if (idTexto == null)
-    {
-        return RedirectToAction("Login", "Cuenta");
-    }
-    int idUsuario = int.Parse(idTexto);
-
-    Kit? kit = BD.ObtenerKitPorId(idKit);
-    if (kit == null)
-    {
-        return RedirectToAction("Index");
-    }
-
-    ViewBag.Kit = kit;
-
-    string error = ValidarPedido(kit, idUsuario, fecha, idBloque);
-    if (error != "")
-    {
-        ViewBag.Error = error;
-        return View("DetalleKit");
-
-    }
-    
-    string codigo = GenerarCodigo();
-    BD.AgregarPrestamo(idKit, idUsuario, fecha, idBloque, codigo);
-
-    ViewBag.Exito = "Préstamo guardado. Tu código es " + codigo + ".";
-    return View("DetalleKit");
-}
-
-private string ValidarPedido(Kit kit, int idUsuario, DateTime fecha, int idBloque)
-{
-  if (BD.ContarPrestamosDelDia(idUsuario, fecha) >= 2)
-    {
-        return "Ya pediste 2 kits para el " + NombreDia(fecha) + " " + fecha.ToString("dd/MM") + ". El máximo es 2 por día.";
-    }
-
-    if (fecha.Date < DateTime.Today)
-    {
-        return "No se puede pedir un kit para una fecha que ya pasó.";
-    }
-
-    Bloque? bloque = BD.ObtenerBloquePorId(idBloque);   
-    if (bloque == null)
-    {
-        return "Elegí un bloque.";
-    }
-
-    if (fecha.Date == DateTime.Today && bloque.HoraInicio <= DateTime.Now.TimeOfDay)
-    {
-        return "Ese bloque ya empezó. Elegí otro.";
-    }
-
-   
-
-    return "";
-}
-
-private string GenerarCodigo()
-{
-    string caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    Random azar = new Random();
-    string codigo = "";
-
-    do
-    {
-        codigo = "";
-        for (int i = 0; i < 6; i++)
-        {
-            codigo = codigo + caracteres[azar.Next(caracteres.Length)];
-        }
-    } while (BD.ExisteCodigo(codigo));
-
-    return codigo;
-}
-
-private string NombreDia(DateTime fecha)
-{
-    string[] dias = { "domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado" };
-    return dias[(int)fecha.DayOfWeek];
-}
-
-
-
 }
