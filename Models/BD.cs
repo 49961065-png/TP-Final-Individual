@@ -5,7 +5,7 @@ namespace TP_Individual_prog.Models;
 
 public class BD
 {
-private static string _connectionString = @"Server=localhost;DataBase=LaboratorioKits;Integrated Security=True;TrustServerCertificate=True;";
+private static string _connectionString = @"Server=localhost\SQLEXPRESS;DataBase=LaboratorioKits;Integrated Security=True;TrustServerCertificate=True;";
     public static List<Kit> ObtenerKits()
     {
         List<Kit> kits = new List<Kit>();
